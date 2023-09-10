@@ -13,8 +13,7 @@
 (define TICKS-SECOND 28) ;; how many times on-tick is called per second
 (define DISPLAY-X 150) ;; x coordinate of world's status
 (define DISPLAY-Y 100) ;; y coordinate of world's status
-
-;test
+ 
 
 (define WAKE-COW 0)
 (define SLEEPING-COW 1) 
@@ -57,23 +56,57 @@
 ;; Yes, I really followed HtDF for the helper functions.  You should too.
 ;; Debugging is so much easier when you can trust the building blocks work properly
 
-(define-struct CowWorld (text ListOfCow TrafficLights))
+(define-struct CowWorld (text cows TrafficLights hay time))
 
-; interp. Represents a display containing text describing the state of the world (text), a list of cows displayed as images, and traffic lights monitoring the cows' movement
-; CowWorld is (make-CowWorld Image ListOfCow TrafficLights)
-; !!
+; Data definition for CowWorld
+; interp. Represents a display containing text describing the state of the world, a list of cows displayed as images, and traffic lights monitoring the cows' movement
+; text: the status board containing the number of awake cows, sleeping cows, bales of hay, whether cows are stampeding, and time elapse. Image type
+; cows: ListOfCow type representing all the cows currently on the screen
+; TrafficLights: Image representing the status of traffic. Will be three circles (red, yellow, green in that order) on top of one another. At any given point in time, exactly one bulb will be lit. The lit bulb represents the state of the traffic. Red means awake cows stop when they get to the light, yellow means awake cows to the left of the traffic light go half speed, green means awake cows move normally.
+; hay: Natural representing the number of hay bales in the CowWorld
+; time: Integer type representing the time elapsed in the CowWorld in ticks
+; CowWorld is (make-CowWorld Image ListOfCow Image)
 
+; Template function for CowWorld
+(define (fn-for-CowWorld CowWorld)
+  (...
+   (CowWorld-text CowWorld)
+   (fn-for-loc (CowWorld-cows CowWorld))
+   (CowWorld-TrafficLights CowWorld)
+   (CowWorld-hay CowWorld)
+   (CowWorld-time CowWorld)))
+                
 
-;!!! define ListOfCow
+(define-struct Cow (state x y speed))
+
+; Data definition for Cow
+; interp. A cow with a state, x- and y- positions and a speed.
+; state: A Natural type from 0 to 2 inclusive. 0 represents an awake cow, 1 represents a sleeping cow, 2 represents a stampeding cow
+; x: Natural representing the x-coordinate of the cow
+; y: Natural representing the y-coordinate of the cow 
+; speed is a Natural representing the speed of the cow in pixels per tick
+
+; Template function for Cow
+(define (fn-for-Cow Cow)
+  (...
+   (Cow-state Cow)
+   (Cow-x Cow)
+   (Cow-y Cow)
+   (Cow-speed Cow)))
+
+; Data definition for ListOfCow
 ; ListOfCow is one of:
 ; - empty
 ; - (cons Cow ListOfCow)
 
-(define-struct Cow (state x y speed))
-; interp. A cow with a state, x- and y- positions and a speed.
-; State represents one of the three Images, awake, asleep, and stampeding
-; x- and y- positions are Natural types
-; speed is a Natural 
+; Template function for ListOfCow
+(define (fn-for-loc loc)
+  (cond [(empty? loc) ...]
+        [else
+         (...
+          (fn-for-Cow (first loc))
+          (fn-for-loc (rest loc)))]))
+                   
 
 (define (main CowWorld)
   (big-bang CowWorld
@@ -96,9 +129,9 @@
 (define (render CowWorld) MTS)
 
 #;(define (render CowWorld)
-  (StopLight CowWorld)
-  place (StatBoard CowWorld) x y MTS
-  (Cow CowWorld))
+    (StopLight CowWorld)
+    place (StatBoard CowWorld) x y MTS
+    (Cow CowWorld))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state

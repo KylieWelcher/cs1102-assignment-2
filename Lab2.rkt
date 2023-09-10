@@ -137,14 +137,64 @@
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state
 
-(define (StatBoard CowWorld)
-  (above (text (append (fn-for-nsc CowWorld) " of sleeeping cows" 24 "pink"))
-         (text (append (fn-for-nac CowWorld) " of awake cows" 24 "pink"))
-         (text (append (fn-for-nhb CowWorld) " of hay bales" 24 "pink"))
-         (text (append (fn-for-yns CowWorld) " Stampeding?" 24 "pink"))
-         (text (append (fn-for-time CowWorld) " time elasped" 24 "pink"))))
++;;!!!
+
+(define (StatBoard CowWorld ListOfCow)
+  (above (text (append (NumSleeping ListOfCow) " of sleeeping cows" 24 "pink"))
+         (text (append (NumAwake ListOfCow) " of awake cows" 24 "pink"))
+         (text (append (CowWorld-hay CowWorld) " of hay bales" 24 "pink"))
+         (text (append (Stampeding? ListOfCow) " Stampeding?" 24 "pink"))
+         (text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
+
+;;!!!
+;;ListOfCow -> Natural
+;;produces number of sleeping cows (1) in consumed CowWorld state
+
+(check-expect (NumSleeping empty) 0)
+(check-expect (NumSleeping               
+(check-expect (NumSleeping
+               
+;look up differences in equal funtions 
+
+;(define (NumSleeping LOC) 0)
+
+(define (NumSleeping LOC)
+  (cond [(empty? LOC) 0]
+        [else (if (= (Cow-state (first LOC)) 1)
+                  (+ 1 (NumSleeping (rest LOC)))
+                  (NumSleeping (rest LOC)))]))
+
+;;!!!
+;;ListOfCow -> Natural
+;;produces number of awake cows (0) in consumed CowWorld state
+
+(check-expect (NumAwake empty) 0)
+(check-expect (NumAwake
+(check-expect (NumAwake
+
+;(define (NumAwake LOC) 0)
+
+(define (NumAwake LOC)
+  (cond [(empty? LOC) 0]
+        [else (if (= (Cow-state (first LOC)) 0)
+                  (+ 1 (NumAwake (rest LOC)))
+                  (NumAwake (rest LOC)))]))
 
 
+;;!!!
+;;ListOfCow -> Boolean
+;;produces true if concumed CowWorld states has stampeding cows (2)
+
+(check-expect (Stampeding empty) false)
+(check-expect (Stampeding
+(check-expect (Stampeding
+               
+;(define (Stampeding? LOC) false)
+
+(define (Stampeding? LOC)
+  (cond [(empty? LOC) false]
+        [(= (Cow-state (first LOC)) 2) true]
+        [else (Stampeding? (rest LOC))]))
                              
 
 ;StopLight = generates light
@@ -163,4 +213,4 @@
   (cond [(mouse=? me "'left-down") ]
         [else CowWorld]
 
-        )
+        ))

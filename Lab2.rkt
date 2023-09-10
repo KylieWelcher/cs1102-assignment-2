@@ -13,7 +13,8 @@
 (define TICKS-SECOND 28) ;; how many times on-tick is called per second
 (define DISPLAY-X 150) ;; x coordinate of world's status
 (define DISPLAY-Y 100) ;; y coordinate of world's status
- 
+
+;test
 
 (define WAKE-COW 0)
 (define SLEEPING-COW 1) 

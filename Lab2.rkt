@@ -99,6 +99,19 @@
    (Cow-y Cow)
    (Cow-speed Cow)))
 
+(define C1 (make-Cow 0 20 20 2))
+(define C2 (make-Cow 0 40 20 2))
+
+(define C3 (make-Cow 1 60 40 0))
+(define C4 (make-Cow 1 80 40 0))
+(define C5 (make-Cow 0 20 40 1))
+
+(define C6 (make-Cow 2 60 40 4))
+(define C7 (make-Cow 2 80 40 4))
+(define C8 (make-Cow 1 20 40 0))
+
+
+
 ; Data definition for ListOfCow
  ; ListOfCow is one of:
 ; - empty
@@ -119,7 +132,9 @@
     (on-key handle-key)))
     ;(on-mouse handle-mouse)))
 
-
+(define LOC1 (list C1 C2))
+(define LOC2 (list C3 C4 C5))
+(define LOC3 (list C6 C7 C8))
 
 ; CowWorld -> CowWorld
 ;  !!!
@@ -158,10 +173,10 @@
 ;;produces number of sleeping cows (1) in consumed CowWorld state
 
 (check-expect (NumSleeping empty) 0)
-(check-expect (NumSleeping (              
-(check-expect (NumSleeping
-;(check-expect (NumSleeping               
-;(check-expect (NumSleeping
+(check-expect (NumSleeping LOC1) 0)              
+(check-expect (NumSleeping LOC2) 2)
+(check-expect (NumSleeping LOC3) 1) 
+
                
 ;look up differences in equal funtions 
 
@@ -178,16 +193,18 @@
 ;;produces number of awake cows (0) in consumed CowWorld state
 
 (check-expect (NumAwake empty) 0)
-;(check-expect (NumAwake
-;(check-expect (NumAwake
+(check-expect (NumAwake LOC1) 2)  
+(check-expect (NumAwake LOC2) 1)
+(check-expect (NumAwake LOC3) 2)
+
 
 ;(define (NumAwake LOC) 0)
 
 (define (NumAwake LOC)
   (cond [(empty? LOC) 0]
-        [else (if (= (Cow-state (first LOC)) 0)
-                  (+ 1 (NumAwake (rest LOC)))
-                  (NumAwake (rest LOC)))]))
+        [else (if (= (Cow-state (first LOC)) 1)
+                  (NumAwake (rest LOC))
+                  (+ 1 (NumAwake (rest LOC))))]))
 
 
 ;;!!!
@@ -195,8 +212,9 @@
 ;;produces true if consumed CowWorld states has stampeding cows (2)
 
 (check-expect (Stampeding? empty) false)
-;(check-expect (Stampeding
-;(check-expect (Stampeding
+(check-expect (Stampeding? LOC1) false)
+(check-expect (Stampeding? LOC2) false)
+(check-expect (Stampeding? LOC3) true)
                
 ;(define (Stampeding? LOC) false)
 

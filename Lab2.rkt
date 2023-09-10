@@ -60,9 +60,13 @@
 
 ; Data definition for CowWorld
 ; interp. Represents a display containing text describing the state of the world, a list of cows displayed as images, and traffic lights monitoring the cows' movement
-; text: the status board containing the number of awake cows, sleeping cows, bales of hay, whether cows are stampeding, and time elapse. Image type
+; text: Image type that contains the status board containing a display of 
+; the number of awake cows, sleeping cows, bales of hay, whether cows are stampeding,
+; and time elapsed. 
 ; cows: ListOfCow type representing all the cows currently on the screen
-; TrafficLights: Image representing the status of traffic. Will be three circles (red, yellow, green in that order) on top of one another. At any given point in time, exactly one bulb will be lit. The lit bulb represents the state of the traffic. Red means awake cows stop when they get to the light, yellow means awake cows to the left of the traffic light go half speed, green means awake cows move normally.
+; TrafficLights: Image representing the status of traffic. Will be three circles
+; (red, yellow, green in that order) on top of one another. At any given point in time,
+; exactly one bulb will be lit. The lit bulb represents the state of the traffic. Red means awake cows stop when they get to the light, yellow means awake cows to the left of the traffic light go half speed, green means awake cows move normally.
 ; hay: Natural representing the number of hay bales in the CowWorld
 ; time: Integer type representing the time elapsed in the CowWorld in ticks
 ; CowWorld is (make-CowWorld Image ListOfCow Image)
@@ -151,7 +155,7 @@
 ;;produces number of sleeping cows (1) in consumed CowWorld state
 
 (check-expect (NumSleeping empty) 0)
-(check-expect (NumSleeping               
+(check-expect (NumSleeping (              
 (check-expect (NumSleeping
                
 ;look up differences in equal funtions 
@@ -183,7 +187,7 @@
 
 ;;!!!
 ;;ListOfCow -> Boolean
-;;produces true if concumed CowWorld states has stampeding cows (2)
+;;produces true if consumed CowWorld states has stampeding cows (2)
 
 (check-expect (Stampeding empty) false)
 (check-expect (Stampeding

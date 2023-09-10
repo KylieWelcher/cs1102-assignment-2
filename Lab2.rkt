@@ -110,49 +110,52 @@
                    
  (define (main CowWorld)
   (big-bang CowWorld
-    (on-tick change)
+    (on-tick changeCowWorld)
     (to-draw render)
-    (on-key handle-key)
-    (on-mouse handle-mouse)))
+    (on-key handle-key)))
+    ;(on-mouse handle-mouse)))
 
 
 
 ; CowWorld -> CowWorld
 ;  !!!
 ; changes the world state
-(define (change CowWorld) (make-CowWorld "a" "b" "c"))
+(define (changeCowWorld CowWorld) (make-CowWorld "a" "b" "c"))
+
+#;(define (changeCowWorld CowWorld)
+  (make-CowWorld
+   
+   (+ (CowWorld-time CowWorld) 1)))
 
 ; CowWorld -> Image
 ;  !!!
 ; draws the world state
 
-(define (render CowWorld) MTS)
+;(define (render CowWorld) MTS)
 
-#;(define (render CowWorld)
-
-    (StopLight CowWorld)
-    place (StatBoard CowWorld) x y MTS
-    (Cow CowWorld))
+(define (render CowWorld)
+    (place-image (StatBoard CowWorld (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state
 
-+;;!!!
+;;!!!
 
 (define (StatBoard CowWorld ListOfCow)
-  (above (text (append (NumSleeping ListOfCow) " of sleeeping cows" 24 "pink"))
-         (text (append (NumAwake ListOfCow) " of awake cows" 24 "pink"))
-         (text (append (CowWorld-hay CowWorld) " of hay bales" 24 "pink"))
-         (text (append (Stampeding? ListOfCow) " Stampeding?" 24 "pink"))
-         (text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
+  (above (text (string-append (NumSleeping ListOfCow) " of sleeeping cows") 24 "pink")
+         (text (string-append (NumAwake ListOfCow) " of awake cows") 24 "pink")
+         (text (string-append (CowWorld-hay CowWorld) " of hay bales") 24 "pink")
+         (text (string-append (Stampeding? ListOfCow) " Stampeding?") 24 "pink")
+         (text (string-append (ticks->seconds 300) " time elasped") 24 "pink")))
+         ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
 
 ;;!!!
 ;;ListOfCow -> Natural
 ;;produces number of sleeping cows (1) in consumed CowWorld state
 
 (check-expect (NumSleeping empty) 0)
-(check-expect (NumSleeping               
-(check-expect (NumSleeping
+;(check-expect (NumSleeping               
+;(check-expect (NumSleeping
                
 ;look up differences in equal funtions 
 
@@ -169,8 +172,8 @@
 ;;produces number of awake cows (0) in consumed CowWorld state
 
 (check-expect (NumAwake empty) 0)
-(check-expect (NumAwake
-(check-expect (NumAwake
+;(check-expect (NumAwake
+;(check-expect (NumAwake
 
 ;(define (NumAwake LOC) 0)
 
@@ -185,9 +188,9 @@
 ;;ListOfCow -> Boolean
 ;;produces true if concumed CowWorld states has stampeding cows (2)
 
-(check-expect (Stampeding empty) false)
-(check-expect (Stampeding
-(check-expect (Stampeding
+(check-expect (Stampeding? empty) false)
+;(check-expect (Stampeding
+;(check-expect (Stampeding
                
 ;(define (Stampeding? LOC) false)
 
@@ -209,7 +212,8 @@
 ; CowWorld MouseEvent -> CowWorld
 ;  !!!
 ; draws the world state
-(define (handle-mouse CowWorld x y me)
+
+#;(define (handle-mouse CowWorld x y me)
   (cond [(mouse=? me "'left-down") ]
         [else CowWorld]
 

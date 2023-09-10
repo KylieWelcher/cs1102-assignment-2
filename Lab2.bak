@@ -16,7 +16,7 @@
 
 
 (define WAKE-COW 0)
-(define SLEEPING-COW 1) 
+(define SLEEPING-COW 1)
 (define STAMPEDING-COW 2)
 
 ;;----------------------------------------------------------------------------

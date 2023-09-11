@@ -134,13 +134,13 @@
 ; CowWorld -> CowWorld
 ;  !!!
 ; changes the world state
+;(define (changeCowWorld CowWorld) (make-CowWorld "a" "b" "c"))
 
-(define (changeCowWorld CowWorld) (make-CowWorld LOC1 0 0))
-
-#;(define (changeCowWorld CowWorld)
-    (make-CowWorld
-   
-     (+ (CowWorld-time CowWorld) 1)))
+(define (changeCowWorld CowWorld)
+  (make-CowWorld
+   ...
+   (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld))
+   (+ (CowWorld-time CowWorld) 1)))
 
 ; CowWorld -> Image
 ;  !!!
@@ -156,13 +156,15 @@
 
 ;;!!!
 
-(define (StatBoard CowWorld ListOfCow)
-  (above (text (string-append (NumSleeping ListOfCow) " of sleeeping cows") 24 "pink")
-         (text (string-append (NumAwake ListOfCow) " of awake cows") 24 "pink")
-         (text (string-append (CowWorld-hay CowWorld) " of hay bales") 24 "pink")
-         (text (string-append (Stampeding? ListOfCow) " Stampeding?") 24 "pink")
-         (text (string-append (ticks->seconds 300) " time elasped") 24 "pink")))
-;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
+(define (StatBoard ticks hay ListOfCow)
+  (above (text (string-append (number->string (NumSleeping ListOfCow)) " of sleeeping cows") 24 "pink")
+         (text (string-append (number->string (NumAwake ListOfCow)) " of awake cows") 24 "pink")
+         (text (string-append (number->string hay) " of hay bales") 24 "pink")
+         (text (string-append (boolean->string (Stampeding? ListOfCow)) " Stampeding?") 24 "pink")
+         (text (string-append (number->string (ticks->seconds ticks)) " time elasped") 24 "pink")))
+
+
+         ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
 
 ;;!!! 
 ;;ListOfCow -> Natural

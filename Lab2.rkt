@@ -141,7 +141,7 @@
    ...
    (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld))
    (+ (CowWorld-time CowWorld) 1)))
-
+ 
 ; CowWorld -> Image
 ;  !!!
 ; draws the world state

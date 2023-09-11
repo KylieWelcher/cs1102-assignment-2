@@ -305,18 +305,19 @@
          (if (not (= (Cow-state (first LOC)) 1))
              (cons (make-Cow 1 (Cow-x (first LOC)) (Cow-y (first LOC)) (Cow-speed (first LOC))) (rest LOC))
              (cons (first LOC) (sleepCow (rest LOC))))]))
+
   
-          
-         
-         
-          
 
-; CowWorld MouseEvent -> CowWorld
-;  !!!
-; draws the world state
+; CowWorld Natural Natural MouseEvent -> CowWorld
+; adds an awake Cow to list of cows in the given CowWorld when a mouse left click occurs
+; the coordinates of the new Cow are the coordinates (x, y) of the mouse event.
+(check-expect (handle-mouse START 80 80 "button-up") START)
+(check-expect (handle-mouse (make-CowWorld empty 0 0) 100 230 "button-down")
+              (cons (make-Cow 0 100 230 (NumAwake empty)) empty))
+(check-expect (handle-mouse START-2 200 170 "button-down")
+              (cons (make-Cow 0 200 170 (NumAwake LOC3)) LOC3))
 
-#;(define (handle-mouse CowWorld x y me)
-    (cond [(mouse=? me "'left-down") ]
-          [else CowWorld]
-
-          ))
+(define (handle-mouse CowWorld x y me) 
+    (cond [(mouse=? me "button-down")
+           (cons (make-Cow 0 x y (NumAwake (CowWorld-cows CowWorld))) (CowWorld-cows CowWorld))]
+          [else CowWorld])) 

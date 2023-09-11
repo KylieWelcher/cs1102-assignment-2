@@ -56,30 +56,23 @@
 ;; Yes, I really followed HtDF for the helper functions.  You should too.
 ;; Debugging is so much easier when you can trust the building blocks work properly
 
-(define-struct CowWorld (text cows TrafficLights hay time))
+(define-struct CowWorld (cows hay time))
 
 ; Data definition for CowWorld
 ; interp. Represents a display containing text describing the state of the world, a list of cows displayed as images, and traffic lights monitoring the cows' movement
-; text: Image type that contains the status board containing a display of 
-; the number of awake cows, sleeping cows, bales of hay, whether cows are stampeding,
-; and time elapsed. 
 ; cows: ListOfCow type representing all the cows currently on the screen
-; TrafficLights: Image representing the status of traffic. Will be three circles
-; (red, yellow, green in that order) on top of one another. At any given point in time,
-; exactly one bulb will be lit. The lit bulb represents the state of the traffic. Red means awake cows stop when they get to the light, yellow means awake cows to the left of the traffic light go half speed, green means awake cows move normally.
 ; hay: Natural representing the number of hay bales in the CowWorld
 ; time: Integer type representing the time elapsed in the CowWorld in ticks
-; CowWorld is (make-CowWorld Image ListOfCow Image)
+; CowWorld is (make-CowWorld ListOfCow Number Number)
 
 ; Template function for CowWorld
 (define (fn-for-CowWorld CowWorld)
   (...
-   (CowWorld-text CowWorld)
    (fn-for-loc (CowWorld-cows CowWorld))
-   (CowWorld-TrafficLights CowWorld)
    (CowWorld-hay CowWorld)
    (CowWorld-time CowWorld)))
-                
+
+
 
 (define-struct Cow (state x y speed))
 
@@ -111,9 +104,8 @@
 (define C8 (make-Cow 1 20 40 0))
 
 
-
 ; Data definition for ListOfCow
- ; ListOfCow is one of:
+; ListOfCow is one of:
 ; - empty
 ; - (cons Cow ListOfCow)
 
@@ -125,26 +117,30 @@
           (fn-for-Cow (first loc))
           (fn-for-loc (rest loc)))]))
                    
- (define (main CowWorld)
+(define (main CowWorld)
   (big-bang CowWorld
     (on-tick changeCowWorld)
     (to-draw render)
     (on-key handle-key)))
-    ;(on-mouse handle-mouse)))
+;(on-mouse handle-mouse)))
 
 (define LOC1 (list C1 C2))
 (define LOC2 (list C3 C4 C5))
 (define LOC3 (list C6 C7 C8))
 
+(define START (make-CowWorld LOC1 0 0))
+(define START-2 (make-CowWorld LOC3 4 34))
+
 ; CowWorld -> CowWorld
 ;  !!!
 ; changes the world state
-(define (changeCowWorld CowWorld) (make-CowWorld "a" "b" "c"))
+
+(define (changeCowWorld CowWorld) (make-CowWorld LOC1 0 0))
 
 #;(define (changeCowWorld CowWorld)
-  (make-CowWorld
+    (make-CowWorld
    
-   (+ (CowWorld-time CowWorld) 1)))
+     (+ (CowWorld-time CowWorld) 1)))
 
 ; CowWorld -> Image
 ;  !!!
@@ -153,7 +149,7 @@
 ;(define (render CowWorld) MTS)
 
 (define (render CowWorld)
-    (place-image (StatBoard CowWorld (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
+  (place-image (StatBoard CowWorld (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state
@@ -166,17 +162,19 @@
          (text (string-append (CowWorld-hay CowWorld) " of hay bales") 24 "pink")
          (text (string-append (Stampeding? ListOfCow) " Stampeding?") 24 "pink")
          (text (string-append (ticks->seconds 300) " time elasped") 24 "pink")))
-         ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
+;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
 
-;;!!!
+;;!!! 
 ;;ListOfCow -> Natural
 ;;produces number of sleeping cows (1) in consumed CowWorld state
 
 (check-expect (NumSleeping empty) 0)
-(check-expect (NumSleeping LOC1) 0)              
+(check-expect (NumSleeping LOC1) 0)
 (check-expect (NumSleeping LOC2) 2)
-(check-expect (NumSleeping LOC3) 1) 
+(check-expect (NumSleeping LOC3) 1)
 
+;(check-expect (NumSleeping               
+;(check-expect (NumSleeping
                
 ;look up differences in equal funtions 
 
@@ -190,13 +188,12 @@
 
 ;;!!!
 ;;ListOfCow -> Natural
-;;produces number of awake cows (0) in consumed CowWorld state
+;;produces number of awake cows (state 0) in consumed CowWorld state
 
 (check-expect (NumAwake empty) 0)
 (check-expect (NumAwake LOC1) 2)  
 (check-expect (NumAwake LOC2) 1)
 (check-expect (NumAwake LOC3) 2)
-
 
 ;(define (NumAwake LOC) 0)
 
@@ -215,6 +212,8 @@
 (check-expect (Stampeding? LOC1) false)
 (check-expect (Stampeding? LOC2) false)
 (check-expect (Stampeding? LOC3) true)
+;(check-expect (Stampeding
+;(check-expect (Stampeding
                
 ;(define (Stampeding? LOC) false)
 
@@ -229,16 +228,64 @@
 ;cow = takes in a cow of a certain type (0-2?) and returns a image
 
 ; CowWorld KeyEvent -> CowWorld
-;  !!!
-; draws the world state
-(define (handle-key CowWorld ke) (make-CowWorld "a" "b" "c"))
+; Updates world state based on key event
+(define (handle-key CowWorld ke) CowWorld)
+  
+#;
+(define (handle-key CowWorld ke)
+  (cond [(key=? "+" ke) (increaseHay CowWorld)]
+        [(key=? "-" ke) (decreaseHay CowWorld)]
+        [(key=? "w" ke) (make-CowWorld (wakeCow CowWorld)
+                                       (CowWorld-hay CowWorld)
+                                       (CowWorld-time CowWorld))]
+        [(key=? "s" ke) (make-CowWorld (sleepCow CowWorld)
+                                       (CowWorld-hay CowWorld)
+                                       (CowWorld-time CowWorld))]
+        [else CowWorld]))
+
+; CowWorld -> CowWorld
+; returns a CowWorld with 1 greater bale of hay than the CowWorld that was inputted.
+(check-expect (increaseHay START) (make-CowWorld LOC1 (+ 1 0) 0))
+(check-expect (increaseHay START-2) (make-CowWorld LOC3 (+ 1 4) 34))
+
+        
+;(define (increaseHay CowWorld) CowWorld)                       
+         
+(define (increaseHay CowWorld) (make-CowWorld
+                                (CowWorld-cows CowWorld)
+                                (+ 1 (CowWorld-hay CowWorld))
+                                (CowWorld-time CowWorld)))
+
+
+; CowWorld -> CowWorld
+; returns a CowWorld with 1 fewer bale of hay than the CowWorld that was inputted
+; if 0 hay bales are in the CowWorld, keep it at 0. No negative hay bales allowed
+(check-expect (decreaseHay START) START)
+(check-expect (decreaseHay START-2) (make-CowWorld LOC3 (- 4 1) 34))
+
+        
+;(define (decreaseHay CowWorld) CowWorld)                       
+         
+(define (decreaseHay CowWorld)
+  (cond [(= (CowWorld-hay CowWorld) 0) CowWorld]
+        [else (make-CowWorld
+               (CowWorld-cows CowWorld)
+               (- (CowWorld-hay CowWorld) 1)
+               (CowWorld-time CowWorld))]))
+
+; ListOfCow -> ListOfCow
+; Wakes an asleep cow. If there are no asleep cows, do nothing.
+;(check-expect (wakeCow LOC1) LOC1)
+;(check-expect (wakeCow LOC2) (list (make-Cow 0 (Cow-x C3) (Cow-y C3) (Cow-speed C3)) C4 C5))
+;(check-expect (wakeCow LOC3) (list C6 C7 (make-Cow 2 
+
 
 ; CowWorld MouseEvent -> CowWorld
 ;  !!!
 ; draws the world state
 
 #;(define (handle-mouse CowWorld x y me)
-  (cond [(mouse=? me "'left-down") ]
-        [else CowWorld]
+    (cond [(mouse=? me "'left-down") ]
+          [else CowWorld]
 
-        ))
+          ))

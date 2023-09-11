@@ -56,7 +56,7 @@
 ;; Yes, I really followed HtDF for the helper functions.  You should too.
 ;; Debugging is so much easier when you can trust the building blocks work properly
 
-(define-struct CowWorld (text cows TrafficLights hay time))
+(define-struct CowWorld (cows hay time))
 
 ; Data definition for CowWorld
 ; interp. Represents a display containing text describing the state of the world, a list of cows displayed as images, and traffic lights monitoring the cows' movement
@@ -74,9 +74,7 @@
 ; Template function for CowWorld
 (define (fn-for-CowWorld CowWorld)
   (...
-   (CowWorld-text CowWorld)
    (fn-for-loc (CowWorld-cows CowWorld))
-   (CowWorld-TrafficLights CowWorld)
    (CowWorld-hay CowWorld)
    (CowWorld-time CowWorld)))
                 
@@ -139,11 +137,12 @@
 ; CowWorld -> CowWorld
 ;  !!!
 ; changes the world state
-(define (changeCowWorld CowWorld) (make-CowWorld "a" "b" "c"))
+;(define (changeCowWorld CowWorld) (make-CowWorld "a" "b" "c"))
 
-#;(define (changeCowWorld CowWorld)
+(define (changeCowWorld CowWorld)
   (make-CowWorld
-   
+   ...
+   (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld))
    (+ (CowWorld-time CowWorld) 1)))
 
 ; CowWorld -> Image
@@ -153,19 +152,21 @@
 ;(define (render CowWorld) MTS)
 
 (define (render CowWorld)
-    (place-image (StatBoard CowWorld (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
+    (place-image (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state
 
 ;;!!!
 
-(define (StatBoard CowWorld ListOfCow)
-  (above (text (string-append (NumSleeping ListOfCow) " of sleeeping cows") 24 "pink")
-         (text (string-append (NumAwake ListOfCow) " of awake cows") 24 "pink")
-         (text (string-append (CowWorld-hay CowWorld) " of hay bales") 24 "pink")
-         (text (string-append (Stampeding? ListOfCow) " Stampeding?") 24 "pink")
-         (text (string-append (ticks->seconds 300) " time elasped") 24 "pink")))
+(define (StatBoard ticks hay ListOfCow)
+  (above (text (string-append (number->string (NumSleeping ListOfCow)) " of sleeeping cows") 24 "pink")
+         (text (string-append (number->string (NumAwake ListOfCow)) " of awake cows") 24 "pink")
+         (text (string-append (number->string hay) " of hay bales") 24 "pink")
+         (text (string-append (boolean->string (Stampeding? ListOfCow)) " Stampeding?") 24 "pink")
+         (text (string-append (number->string (ticks->seconds ticks)) " time elasped") 24 "pink")))
+
+
          ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
 
 ;;!!!

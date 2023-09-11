@@ -149,7 +149,7 @@
 ;(define (render CowWorld) MTS)
 
 (define (render CowWorld)
-  (place-image (StatBoard CowWorld (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
+  (place-image (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state
@@ -157,15 +157,12 @@
 ;;!!!
 
 (define (StatBoard ticks hay ListOfCow)
-  (above (text (string-append (number->string (NumSleeping ListOfCow)) " of sleeeping cows") 24 "pink")
-         (text (string-append (number->string (NumAwake ListOfCow)) " of awake cows") 24 "pink")
-         (text (string-append (number->string hay) " of hay bales") 24 "pink")
-         (text (string-append (boolean->string (Stampeding? ListOfCow)) " Stampeding?") 24 "pink")
-         (text (string-append (number->string (ticks->seconds ticks)) " time elasped") 24 "pink")))
- 
+  (above/align "left" (text (string-append (number->string (NumSleeping ListOfCow)) " of sleeeping cows") 24 "pink")
+               (text (string-append (number->string (NumAwake ListOfCow)) " of awake cows") 24 "pink")
+               (text (string-append (number->string hay) " of hay bales") 24 "pink")
+               (text (string-append (boolean->string (Stampeding? ListOfCow)) " Stampeding?") 24 "pink")
+               (text (string-append (number->string (ticks->seconds ticks)) " time elasped") 24 "pink")))
 
-         ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
- 
 ;;!!! 
 ;;ListOfCow -> Natural
 ;;produces number of sleeping cows (1) in consumed CowWorld state

@@ -46,7 +46,7 @@
 ;; converts the number of clock ticks to # seconds as a natural
 (define (ticks->seconds ticks)
   (floor (/ ticks TICKS-SECOND)))
-
+ 
 (check-expect (ticks->seconds 0) 0)
 (check-expect (ticks->seconds 28) 1)
 (check-expect (ticks->seconds 280) 10)
@@ -162,10 +162,10 @@
          (text (string-append (number->string hay) " of hay bales") 24 "pink")
          (text (string-append (boolean->string (Stampeding? ListOfCow)) " Stampeding?") 24 "pink")
          (text (string-append (number->string (ticks->seconds ticks)) " time elasped") 24 "pink")))
-
+ 
 
          ;(text (append (ticks->seconds (CowWorld-time CowWorld)) " time elasped" 24 "pink"))))
-
+ 
 ;;!!! 
 ;;ListOfCow -> Natural
 ;;produces number of sleeping cows (1) in consumed CowWorld state

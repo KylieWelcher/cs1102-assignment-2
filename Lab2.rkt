@@ -127,6 +127,7 @@
 (define LOC1 (list C1 C2))
 (define LOC2 (list C3 C4 C5))
 (define LOC3 (list C6 C7 C8))
+(define LOC4 (list C3 C4))
 
 (define START (make-CowWorld LOC1 0 0))
 (define START-2 (make-CowWorld LOC3 4 34))
@@ -228,13 +229,13 @@
 
 ; CowWorld KeyEvent -> CowWorld
 ; Updates world state based on key event
-(define (handle-key CowWorld ke) CowWorld)
+
+;(define (handle-key CowWorld ke) CowWorld)
   
-#;
 (define (handle-key CowWorld ke)
   (cond [(key=? "+" ke) (increaseHay CowWorld)]
         [(key=? "-" ke) (decreaseHay CowWorld)]
-        [(key=? "w" ke) (make-CowWorld (wakeCow CowWorld)
+        [(key=? "w" ke) (make-CowWorld (wakeCow (CowWorld-cows CowWorld))
                                        (CowWorld-hay CowWorld)
                                        (CowWorld-time CowWorld))]
         [(key=? "s" ke) (make-CowWorld (sleepCow CowWorld)
@@ -273,11 +274,42 @@
                (CowWorld-time CowWorld))]))
 
 ; ListOfCow -> ListOfCow
-; Wakes an asleep cow. If there are no asleep cows, do nothing.
-;(check-expect (wakeCow LOC1) LOC1)
-;(check-expect (wakeCow LOC2) (list (make-Cow 0 (Cow-x C3) (Cow-y C3) (Cow-speed C3)) C4 C5))
-;(check-expect (wakeCow LOC3) (list C6 C7 (make-Cow 2 
+; Searches for an asleep cow in a list of cows and awakes it.
+; If there are no asleep cows, do nothing.
+(check-expect (wakeCow LOC1) LOC1)
+(check-expect (wakeCow LOC2) (list (make-Cow 0 (Cow-x C3) (Cow-y C3) (Cow-speed C3)) C4 C5))
+(check-expect (wakeCow LOC3) (list C6 C7 (make-Cow 0 (Cow-x C8) (Cow-y C8) (Cow-speed C8))))
 
+;(define (wakeCow LOC) LOC)
+
+(define (wakeCow LOC)
+  (cond [(empty? LOC) empty]
+        [else
+         (if (= (Cow-state (first LOC)) 1)
+             (cons (make-Cow 0 (Cow-x (first LOC)) (Cow-y (first LOC)) (Cow-speed (first LOC))) (rest LOC))
+             (cons (first LOC) (wakeCow (rest LOC))))]))
+
+; ListOfCow -> ListOfCow
+; Searches for an awake cow in a list of cows and puts it to sleep.
+; If there are no awake cows do nothing.
+(check-expect (sleepCow LOC4) LOC4)
+(check-expect (sleepCow LOC1) (list (make-Cow 1 (Cow-x C1) (Cow-y C1) (Cow-speed C1)) C2))
+(check-expect (sleepCow LOC2) (list C3 C4 (make-Cow 1 (Cow-x C5) (Cow-y C5) (Cow-speed C5))))
+(check-expect (sleepCow LOC3) (list (make-Cow 1 (Cow-x C6) (Cow-y C6) (Cow-speed C6)) C7 C8))
+
+;(define (sleepCow LOC) LOC)
+
+(define (sleepCow LOC)
+  (cond [(empty? LOC) empty]
+        [else
+         (if (not (= (Cow-state (first LOC)) 1))
+             (cons (make-Cow 1 (Cow-x (first LOC)) (Cow-y (first LOC)) (Cow-speed (first LOC))) (rest LOC))
+             (cons (first LOC) (sleepCow (rest LOC))))]))
+  
+          
+         
+         
+          
 
 ; CowWorld MouseEvent -> CowWorld
 ;  !!!

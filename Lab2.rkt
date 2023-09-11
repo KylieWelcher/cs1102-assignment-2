@@ -150,7 +150,10 @@
 ;(define (render CowWorld) MTS)
 
 (define (render CowWorld)
-  (place-image (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
+  (place-image (StatBoard
+                (CowWorld-time CowWorld)
+                (CowWorld-hay CowWorld)
+                (CowWorld-cows CowWorld)) (/ WIDTH 2) (/ HEIGHT 2) MTS))
 
 ;;CowWorld -> Image
 ;;draws the StatBoard of current world state

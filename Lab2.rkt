@@ -116,13 +116,14 @@
          (...
           (fn-for-Cow (first loc))
           (fn-for-loc (rest loc)))]))
-                   
+                    
 (define (main CowWorld)
-  (big-bang CowWorld
+  (big-bang CowWorld 
     (on-tick changeCowWorld)
     (to-draw render)
-    (on-key handle-key)))
-;(on-mouse handle-mouse)))
+    (on-key handle-key)
+    (on-mouse handle-mouse)))
+    
 
 (define LOC1 (list C1 C2))
 (define LOC2 (list C3 C4 C5))
@@ -142,7 +143,7 @@
    ...
    (StatBoard (CowWorld-time CowWorld) (CowWorld-hay CowWorld) (CowWorld-cows CowWorld))
    (+ (CowWorld-time CowWorld) 1)))
- 
+  
 ; CowWorld -> Image
 ;  !!!
 ; draws the world state
